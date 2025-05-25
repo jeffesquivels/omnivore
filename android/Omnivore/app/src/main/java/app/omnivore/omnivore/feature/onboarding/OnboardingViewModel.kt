@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.omnivore.omnivore.BuildConfig
 import app.omnivore.omnivore.R
-import app.omnivore.omnivore.core.analytics.EventTracker
 import app.omnivore.omnivore.core.data.DataService
 import app.omnivore.omnivore.core.datastore.DatastoreRepository
 import app.omnivore.omnivore.core.datastore.followingTabActive
@@ -37,7 +36,6 @@ import app.omnivore.omnivore.utils.ResourceProvider
 import com.apollographql.apollo3.ApolloClient
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.intercom.android.sdk.Intercom
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +56,6 @@ data class PendingEmailUserCreds(
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository,
-    private val eventTracker: EventTracker,
     private val networker: Networker,
     private val dataService: DataService,
     private val resourceProvider: ResourceProvider
@@ -145,9 +142,6 @@ class OnboardingViewModel @Inject constructor(
     fun registerUser() {
         viewModelScope.launch {
             val viewer = networker.viewer()
-            viewer?.let {
-                eventTracker.registerUser(viewer.userID, viewer.intercomHash, BuildConfig.DEBUG)
-            }
         }
     }
 
@@ -354,8 +348,6 @@ class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             datastoreRepository.clear()
             dataService.clearDatabase()
-            Intercom.client().logout()
-            eventTracker.logout()
         }
     }
 

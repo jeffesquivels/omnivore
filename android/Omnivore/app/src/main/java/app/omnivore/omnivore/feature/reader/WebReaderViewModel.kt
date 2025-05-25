@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.omnivore.omnivore.R
-import app.omnivore.omnivore.core.analytics.EventTracker
 import app.omnivore.omnivore.core.data.DataService
 import app.omnivore.omnivore.core.data.archiveSavedItem
 import app.omnivore.omnivore.core.data.createWebHighlight
@@ -92,7 +91,6 @@ class WebReaderViewModel @Inject constructor(
     private val datastoreRepository: DatastoreRepository,
     private val dataService: DataService,
     private val networker: Networker,
-    private val eventTracker: EventTracker,
     private val savedItemDao: SavedItemDao,
     @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
@@ -236,14 +234,6 @@ class WebReaderViewModel @Inject constructor(
 
         if (webReaderParams != null) {
             Log.d("reader", "data loaded from server")
-            eventTracker.track(
-                "link_read",
-                com.posthog.android.Properties()
-                    .putValue("linkID", webReaderParams.item.savedItemId)
-                    .putValue("slug", webReaderParams.item.slug)
-                    .putValue("originalArticleURL", webReaderParams.item.pageURLString)
-                    .putValue("loaded_from", "network")
-            )
             webReaderParamsFlow.update { webReaderParams }
             isLoading = false
         }
@@ -255,14 +245,6 @@ class WebReaderViewModel @Inject constructor(
 
         if (webReaderParams != null && isSuccessful) {
             this.slug = webReaderParams.item.slug
-            eventTracker.track(
-                "link_read",
-                com.posthog.android.Properties()
-                    .putValue("linkID", webReaderParams.item.savedItemId)
-                    .putValue("slug", webReaderParams.item.slug)
-                    .putValue("originalArticleURL", webReaderParams.item.pageURLString)
-                    .putValue("loaded_from", "request_id")
-            )
             webReaderParamsFlow.update {  (webReaderParams) }
             isLoading = false
         } else if (requestCount < 7) {
@@ -297,14 +279,6 @@ class WebReaderViewModel @Inject constructor(
                     )
 
                     Log.d("sync", "data loaded from db")
-                    eventTracker.track(
-                        "link_read",
-                        com.posthog.android.Properties()
-                            .putValue("linkID", webReaderParams.item.savedItemId)
-                            .putValue("slug", webReaderParams.item.slug)
-                            .putValue("originalArticleURL", webReaderParams.item.pageURLString)
-                            .putValue("loaded_from", "db")
-                    )
                     webReaderParamsFlow.update { webReaderParams }
                 }
             }
