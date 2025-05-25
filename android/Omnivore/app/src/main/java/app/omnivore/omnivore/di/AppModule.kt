@@ -1,7 +1,6 @@
 package app.omnivore.omnivore.di
 
 import android.content.Context
-import app.omnivore.omnivore.core.analytics.EventTracker
 import app.omnivore.omnivore.core.data.DataService
 import app.omnivore.omnivore.core.database.OmnivoreDatabase
 import app.omnivore.omnivore.core.datastore.DatastoreRepository
@@ -27,10 +26,6 @@ object AppModule {
   @Singleton
   @Provides
   fun provideNetworker(datastore: DatastoreRepository) = Networker(datastore)
-
-  @Singleton
-  @Provides
-  fun provideAnalytics(@ApplicationContext app: Context) = EventTracker(app)
 
   @Singleton
   @Provides

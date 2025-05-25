@@ -26,13 +26,7 @@ class MainActivity : ComponentActivity() {
 
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val licenseKey = getString(R.string.pspdfkit_license_key)
-
-            if (licenseKey.length > 30) {
-                PSPDFKit.initialize(this@MainActivity, licenseKey)
-            } else {
-                PSPDFKit.initialize(this@MainActivity, null)
-            }
+            PSPDFKit.initialize(this@MainActivity, null)
         }
 
         enableEdgeToEdge()
