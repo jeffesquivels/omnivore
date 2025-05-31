@@ -166,7 +166,10 @@ fun OnboardingScreen(
                             )
                         }
                         composable(Routes.SelfHosting.route){
-                            SelfHostedScreen(viewModel = viewModel)
+                            SelfHostedScreen(
+                                viewModel = viewModel,
+                                onboardingNavController = onboardingNavController
+                            )
                         }
                         composable(Routes.CreateUser.route){
                             CreateUserScreen(
