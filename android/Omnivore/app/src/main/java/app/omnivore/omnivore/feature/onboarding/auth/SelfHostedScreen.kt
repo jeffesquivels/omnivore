@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.omnivore.omnivore.R
 import app.omnivore.omnivore.core.designsystem.component.DividerWithText
@@ -46,7 +47,8 @@ import app.omnivore.omnivore.utils.SELF_HOSTING_URL
 
 @Composable
 fun SelfHostedScreen(
-    viewModel: OnboardingViewModel = hiltViewModel()
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    onboardingNavController: NavHostController
 ) {
     var apiServer by rememberSaveable { mutableStateOf("") }
     var webServer by rememberSaveable { mutableStateOf("") }
@@ -63,6 +65,7 @@ fun SelfHostedScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SelfHostedFields(
+                onboardingNavController,
                 apiServer,
                 webServer,
                 onAPIServerChange = { apiServer = it },
@@ -96,6 +99,7 @@ fun SelfHostedScreen(
 
 @Composable
 fun SelfHostedFields(
+    onboardingNavController: NavHostController,
     apiServer: String,
     webServer: String,
     onAPIServerChange: (String) -> Unit,
@@ -143,6 +147,7 @@ fun SelfHostedFields(
             if (apiServer.isNotBlank() && webServer.isNotBlank()) {
                 onSaveClick()
                 focusManager.clearFocus()
+                onboardingNavController.popBackStack()
             } else {
                 Toast.makeText(
                     context,
