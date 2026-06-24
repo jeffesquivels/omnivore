@@ -1,8 +1,8 @@
-FROM node:22.12 as builder
+FROM node:22.12 AS builder
 
 WORKDIR /app
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 RUN apt-get update && apt-get install -y g++ make python3
 
 COPY package.json .
@@ -38,14 +38,14 @@ RUN rm -rf /app/packages/api/node_modules
 RUN rm -rf /app/node_modules
 RUN yarn install --pure-lockfile --production --network-timeout=300000
 
-FROM node:22.12 as runner
+FROM node:22.12 AS runner
 LABEL org.opencontainers.image.source="https://github.com/omnivore-app/omnivore"
 
 RUN apt-get update && apt-get install -y netcat-openbsd ca-certificates
 
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY do.crt /usr/local/share/ca-certificates/do.crt
 COPY --from=builder /app/packages/api/dist /app/packages/api/dist

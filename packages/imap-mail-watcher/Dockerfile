@@ -1,4 +1,4 @@
- FROM node:22.12 as builder
+ FROM node:22.12 AS builder
 
 WORKDIR /app
 
@@ -23,11 +23,11 @@ ADD /packages/utils ./packages/utils
 RUN yarn workspace @omnivore/utils build
 RUN yarn workspace @omnivore/imap-mail-watcher build
 
-FROM node:22.12 as runner
+FROM node:22.12 AS runner
 
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY --from=builder /app/packages/imap-mail-watcher/dist /app/packages/imap-mail-watcher/dist
 COPY --from=builder /app/packages/imap-mail-watcher/package.json /app/packages/imap-mail-watcher/package.json
