@@ -41,12 +41,13 @@ RUN yarn install --pure-lockfile --production --network-timeout=300000
 FROM node:22.12 as runner
 LABEL org.opencontainers.image.source="https://github.com/omnivore-app/omnivore"
 
-RUN apt-get update && apt-get install -y netcat-openbsd
+RUN apt-get update && apt-get install -y netcat-openbsd ca-certificates
 
 WORKDIR /app
 
 ENV NODE_ENV production
 
+COPY do.crt /usr/local/share/ca-certificates/do.crt
 COPY --from=builder /app/packages/api/dist /app/packages/api/dist
 COPY --from=builder /app/packages/readabilityjs/ /app/packages/readabilityjs/
 COPY --from=builder /app/packages/api/package.json /app/packages/api/package.json
@@ -57,5 +58,9 @@ COPY --from=builder /app/packages/text-to-speech/ /app/packages/text-to-speech/
 COPY --from=builder /app/packages/content-handler/ /app/packages/content-handler/
 COPY --from=builder /app/packages/liqe/ /app/packages/liqe/
 COPY --from=builder /app/packages/utils/ /app/packages/utils/
+
+RUN update-ca-certificates
+
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/do.crt
 
 CMD ["yarn", "workspace", "@omnivore/api", "start_queue_processor"]

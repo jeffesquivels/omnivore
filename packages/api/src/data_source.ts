@@ -11,6 +11,7 @@ export const appDataSource = new DataSource({
   username: env.pg.userName,
   password: env.pg.password,
   database: env.pg.dbName,
+  ssl: true,
   logging: ['query', 'info'],
   entities: [__dirname + '/entity/**/*{.js,.ts}'],
   subscribers: [__dirname + '/events/**/*{.js,.ts}'],
@@ -32,6 +33,7 @@ export const appDataSource = new DataSource({
           username: env.pg.userName,
           password: env.pg.password,
           database: env.pg.dbName,
+          ssl: true,
         },
         slaves: [
           {
@@ -40,6 +42,7 @@ export const appDataSource = new DataSource({
             username: env.pg.replica.userName,
             password: env.pg.replica.password,
             database: env.pg.replica.dbName,
+            ssl: true,
           },
         ],
       }
@@ -51,6 +54,7 @@ export const appDataSource = new DataSource({
           username: env.pg.userName,
           password: env.pg.password,
           database: env.pg.dbName,
+          ssl: true,
         },
         slaves: [],
       },

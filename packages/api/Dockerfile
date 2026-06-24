@@ -27,7 +27,7 @@ RUN yarn install --pure-lockfile --network-timeout=300000 && \
 FROM node:22.12-alpine AS runner
 LABEL org.opencontainers.image.source="https://github.com/omnivore-app/omnivore"
 
-RUN apk update && apk add netcat-openbsd && rm -rf /var/cache/apk/*
+RUN apk update && apk add netcat-openbsd ca-certificates && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
@@ -35,6 +35,7 @@ ENV NODE_ENV=production
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV PORT=8080
 
+COPY do.crt /usr/local/share/ca-certificates/do.crt
 COPY --from=builder /app/packages/api/dist /app/packages/api/dist
 COPY --from=builder /app/packages/readabilityjs/ /app/packages/readabilityjs/
 COPY --from=builder /app/packages/api/package.json /app/packages/api/package.json
@@ -47,5 +48,9 @@ COPY --from=builder /app/packages/liqe/ /app/packages/liqe/
 COPY --from=builder /app/packages/utils/ /app/packages/utils/
 
 EXPOSE 8080
+
+RUN update-ca-certificates
+
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/do.crt
 
 CMD ["yarn", "workspace", "@omnivore/api", "start"]
